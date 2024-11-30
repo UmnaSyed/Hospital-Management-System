@@ -1,3 +1,183 @@
+
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define maxpatients 100
+
+struct Hospitals{
+    char hospitalName[100];
+    char area[100];
+    int totalbeds;
+    int availablebeds;
+    float hospReview[100];
+    int reviewCount;
+};
+
+struct Patients {
+    char patientName[100];
+    int age;
+    char gender[10];
+    char diet[100];
+    char prescription[100];
+    int hospindex;
+};
+
+
+
+void addpatient(struct Patients patients[], int *noofpatients, struct Hospitals hospitals[], int hospitalcount){
+if (*noofpatients>maxpatients){
+    printf("Patient list is full, cannot add more records!");
+}
+else {
+    printf("Enter patient name: \n");
+    scanf(" %[^\n]", patients[*noofpatients].patientName);
+    printf("Enter patient's age: \n");
+    scanf("%d", &patients[*noofpatients].age);
+    printf("Enter gender: \n");
+    scanf(" %[^\n]", patients[*noofpatients].gender);
+    printf("Enter diet: \n");
+    scanf(" %[^\n]", patients[*noofpatients].diet);
+    printf("Enter prescription: \n");
+    scanf(" %[^\n]", patients[*noofpatients].prescription);
+
+    printf("Select hospital by Hospital's index:\n");
+        for (int i = 0; i < hospitalcount; i++) {
+            printf("%d. %s\n", i, hospitals[i].hospitalName);
+        }
+        scanf("%d", &patients[*noofpatients].hospindex);
+        if (patients[*noofpatients].hospindex < 0 || patients[*noofpatients].hospindex >= hospitalcount) {
+            printf("Invalid hospital index!\n");
+            patients[*noofpatients].hospindex = -1;
+        }
+
+    (*noofpatients)++;
+    printf("New record successfully added!\n");
+    savedata(patients, *noofpatients, hospitals, hospitalcount);
+}
+}
+
+void delpatient(struct Patients patients[], int *noofpatients,  struct Hospitals hospitals[], int hospitalcount){
+  if (*noofpatients==0){
+    printf("No records to delete!");
+    return;
+}
+else {  
+    char name[100];
+    printf("Enter the name of the patient you want to delete: \n");
+    scanf(" %[^\n]", name);
+    int found=-1;
+    for (int i=0; i<*noofpatients; i++){
+        if (strcasecmp(patients[i].patientName, name)==0){
+            found = i;
+            break;
+        }
+    }
+    if (found == -1){
+    printf("No record found!\n");
+    return;
+    } 
+    else {
+        for (int i=found; i<*noofpatients-1; i++){
+            patients[i]=patients[i+1];
+        }
+        (*noofpatients)--;
+        printf("Patient record deleted!\n");
+        savedata(patients, *noofpatients, hospitals, hospitalcount);
+    }
+}
+}
+
+void updatepatient(struct Patients patients[], int noofpatients, struct Hospitals hospitals[], int hospitalcount){
+    char name[100];
+    printf("Enter the name of the patient: ");
+    scanf(" %[^\n]", name); 
+    int found=0;
+    for (int i =0; i<noofpatients; i++){
+        if (strcasecmp(patients[i].patientName, name)==0){
+            found=1;
+             printf("Enter diet: \n");
+             scanf(" %[^\n]", patients[i].diet);
+             printf("Enter prescription: \n");
+             scanf(" %[^\n]", patients[i].prescription);
+            return;
+        }
+    }
+    savedata(patients, noofpatients, hospitals, hospitalcount);
+    if (found==0){
+        printf("No record found!");
+    }
+}
+
+void searchpatient(struct Patients patients[], int noofpatients, struct Hospitals hospitals[]){
+    char name[100];
+    printf("Enter the name of the patient: ");
+    scanf(" %[^\n]", name); 
+    int found=-1;
+     for (int i =0; i<noofpatients; i++){
+        if (strcasecmp(patients[i].patientName, name)==0){
+            found=i;
+            printf("Name: %s \nAge: %d\nGender: %s\n", patients[i].patientName, patients[i].age, patients[i].gender);
+            printf("Diet: %s \nPresciption: %s\n", patients[i].diet, patients[i].prescription);
+            if (patients[i].hospindex>=0){
+                printf("Admitted to: %s\n", hospitals[patients[i].hospindex].hospitalName);
+            }
+            return;
+}
+}
+if (found==-1){
+    printf("No record found!");
+}
+}
+
+void checkBeds(struct Hospitals hospitals[], int hospitalcount){
+    for (int i=0; i<hospitalcount; i++){
+        if (hospitals[i].availablebeds>0){
+            printf("Name: %s\nArea: %s \nNumber of available beds: %d\n", hospitals[i].hospitalName, hospitals[i].area, hospitals[i].availablebeds);
+        }
+        printf("\n");
+    }
+}
+
+void addreview(struct Hospitals hospitals[], int hospindex){
+    float review;
+    char suggestions[100];
+    printf("Give review (1 to 5): \n");
+    scanf("%f", &review);
+    hospitals[hospindex].reviewCount++;
+    if (review>5 || review<1){
+        printf("Invalid review! Please enter a rating between 1 and 5.\n");
+        return;
+    }
+    hospitals[hospindex].hospReview[hospitals[hospindex].reviewCount]=review;
+    if (review<3){
+        printf("How can we improve our service? Please leave suggestions.\n");
+        scanf(" %[^\n]", suggestions);
+    }
+    else {
+    printf("Thanks for your review!\n");
+    }
+}
+
+
+float avgRating(float hospReview[], int reviewCount){
+if (reviewCount == 0){
+    return 0.0;
+}
+    float sum = 0;
+    for (int i=0; i<reviewCount; i++){
+        sum+=hospReview[i];
+    }
+    return sum/reviewCount;
+}
+
+void dispReview(struct Hospitals hospitals[], int hospindex){
+    float avg=avgRating(hospitals[hospindex].hospReview, hospitals[hospindex].reviewCount);
+    printf("Average rating for %s: %.1f \n", hospitals[hospindex].hospitalName, avg);
+}
+
+
+
+
 int main(){
     struct Patients patients[maxpatients]={
         {"Ahmed", 19, "Male", "Norvasc", "Avoid oily foods", 0},
