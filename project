@@ -1,0 +1,81 @@
+int main(){
+    struct Patients patients[maxpatients]={
+        {"Ahmed", 19, "Male", "Norvasc", "Avoid oily foods", 0},
+        {"Haania", 17, "Female", "Panadol", "Stay hydrated", 1},
+        {"Ali", 2, "Male", "Calpol", "Fluids", 2},
+        {"Ms.Asiya", 34,"Female","Azomax", "Avoid cold beverages", 3}
+    };
+    struct Hospitals hospitals[5]={
+        {"Hill Park Hospital", "PECHS", 50, 10, {4.2,3.3,1,5}, 4},
+        {"City Hospital", "Saddar", 60, 45, {4.2,3,3,5}, 4},
+        {"South City", "Clifton", 45, 35, {2.3,4,4,3.3,3.2,3.5},6},
+        {"Ankelseria Hospital", "Saddar", 60, 23,{3.5,3.5,4.4,5,4.8}, 5},
+        {"Memon Medical Center", "Johar", 80, 55,{4.3,3,3.4,4.4,3.8,4.9}, 6}
+    };
+    int noofpatients=4, hospitalcount=5, choice, hospindex;
+    loadData(patients, &noofpatients, hospitals, &hospitalcount);
+do {
+printf("\nWelcome to ABC Hospital Managment System\n");
+printf("1. Add a new patient record\n");
+printf("2. Delete a record\n");
+printf("3. Update patient's details\n");
+printf("4. Search for a patient\n");
+printf("5. Check bed availability\n");
+printf("6. Add reviews\n");
+printf("7. Display reviews\n");
+printf("8. Save Data and Exit\n");
+printf("9. Exit\n");
+printf("Enter your option: \n");
+scanf("%d", &choice);
+switch (choice){
+case 1:
+addpatient(patients, &noofpatients, hospitals, hospitalcount);
+break;
+case 2:
+delpatient(patients, &noofpatients, hospitals, hospitalcount);
+break;
+case 3:
+updatepatient(patients, noofpatients, hospitals, hospitalcount);
+break;
+case 4:
+searchpatient(patients, noofpatients, hospitals);
+break;
+case 5:
+checkBeds(hospitals, hospitalcount);
+break;
+case 6:
+printf("Enter the hopsital's index number (0 for Hill Park Hospital, 1 for City Hospital, 2 for South City Hospital, 3 for Ankelseria Hospital, 4 for Memon Medical Center): \n");
+scanf("%d", &hospindex);
+if (hospindex<0 || hospindex>=hospitalcount){
+    printf("INVALID INDEX!");
+}
+else {
+addreview(hospitals, hospindex);
+}
+break;
+case 7:
+printf("Enter the hopsital's index number (0 for Hill Park Hospital, 1 for City Hospital, 2 for South City Hospital, 3 for Ankelseria Hospital, 4 for Memon Medical Center): \n");
+scanf("%d", &hospindex);
+if (hospindex<0 || hospindex>=hospitalcount){
+    printf("INVALID INDEX!");
+}
+else {
+dispReview(hospitals, hospindex);
+}
+break;
+case 8:
+savedata(patients, noofpatients, hospitals, hospitalcount);
+printf("Exiting.....");
+choice=9;
+break;
+case 9:
+printf("Exiting...\n");
+return 0;
+break;
+default:
+printf("Invalid option! Make sure to enter numbers between 1 to 9.\n");
+}
+}
+while (choice!=9);
+return 0;
+}
