@@ -1,3 +1,73 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define maxpatients 100
+
+struct Hospitals{
+    char hospitalName[100];
+    char area[100];
+    int totalbeds;
+    int availablebeds;
+    float hospReview[100];
+    int reviewCount;
+};
+
+struct Patients {
+    char patientName[100];
+    int age;
+    char gender[10];
+    char diet[100];
+    char prescription[100];
+    int hospindex;
+};
+
+
+void savedata(struct Patients patients[], int noofpatients, struct Hospitals hospitals[], int hospitalcount){
+    FILE *file=fopen("C:/Users/laptop/Desktop/pf/hospital_data.txt", "w");
+    if (file==NULL){
+        printf("Error saving data! File not found!");
+        return;
+    }
+    fprintf(file,"%d\n", noofpatients);
+    for (int i=0; i<noofpatients; i++){
+        fprintf(file,"%s %d %s %s %s %d\n", patients[i].patientName, patients[i].age, patients[i].gender, patients[i].diet, patients[i].prescription, patients[i].hospindex);
+    }
+    fprintf(file,"%d\n", hospitalcount);
+    for (int i=0; i<hospitalcount; i++){
+        fprintf(file,"%s %s %d %d\n", hospitals[i].hospitalName, hospitals[i].area, hospitals[i].totalbeds, hospitals[i].availablebeds);
+        for(int j=0; j<hospitals[i].reviewCount; j++){
+             fprintf(file, "%.1f ", hospitals[i].hospReview[j]);
+        }
+        fprintf(file, "\n");
+    }
+    fclose(file);
+    printf("Data saved successfully!");
+}
+
+void loadData (struct Patients patients[], int *noofpatients, struct Hospitals hospitals[], int *hospitalcount){
+ FILE *file=fopen("C:/Users/laptop/Desktop/pf/hospital_data.txt", "r");
+    if (file==NULL){
+        printf("No saved data not found!");
+        return;
+    }
+    fscanf(file, "%d", noofpatients);
+    for (int i=0; i< *noofpatients; i++){
+        fscanf(file, " %[^\n] %d %s %[^\n] %[^\n] %d", patients[i].patientName, &patients[i].age, patients[i].gender, patients[i].diet, patients[i].prescription, patients[i].hospindex);
+    }
+    fscanf(file, "%d", hospitalcount);
+    for (int i=0; i< *hospitalcount; i++){
+        fscanf(file, " %[^\n] %[^\n] %d %d", hospitals[i].hospitalName, hospitals[i].area, &hospitals[i].totalbeds, &hospitals[i].availablebeds);
+        fscanf(file, "%f", &hospitals[i].reviewCount);
+        for (int j=0; j<hospitals[i].reviewCount; j++){
+            fscanf(file, "%f", &hospitals[i].hospReview[j]);
+        }
+    }
+    fclose(file);
+    printf("Data loaded successfully!\n");
+}
+
+
+
 int main(){
     struct Patients patients[maxpatients]={
         {"Ahmed", 19, "Male", "Norvasc", "Avoid oily foods", 0},
